@@ -12,6 +12,11 @@ class ModelCatalogCategory extends Model {
 		foreach ($data['category_description'] as $language_id => $value) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "category_description SET category_id = '" . (int)$category_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
 		}
+        //Any Url
+        foreach ($data['any_url'] as $value)
+        {
+                $this->db->query('INSERT INTO '. DB_PREFIX .'category_any_url (`id_category`, `name`, `link`) VALUES ('.(int)$category_id.', \''.$this->db->escape($value['name']).'\', \''.$this->db->escape($value['link']).'\')');
+        }
 
 		// MySQL Hierarchical Data Closure Table Pattern
 		$level = 0;
@@ -72,6 +77,15 @@ class ModelCatalogCategory extends Model {
 		foreach ($data['category_description'] as $language_id => $value) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "category_description SET category_id = '" . (int)$category_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
 		}
+        //Any Url
+		foreach ($data['any_url'] as $value)
+        {
+            $index = (int)$value['id'];
+            if($index)
+                $this->db->query('UPDATE '. DB_PREFIX .'category_any_url SET name = \''.$this->db->escape($value['name']).'\', link = \''.$this->db->escape($value['link']).'\' WHERE id = '.$index);
+            else
+                $this->db->query('INSERT INTO '. DB_PREFIX .'category_any_url (`id_category`, `name`, `link`) VALUES ('.(int)$category_id.', \''.$this->db->escape($value['name']).'\', \''.$this->db->escape($value['link']).'\')');
+        }
 
 		// MySQL Hierarchical Data Closure Table Pattern
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "category_path` WHERE path_id = '" . (int)$category_id . "' ORDER BY level ASC");
@@ -329,6 +343,16 @@ class ModelCatalogCategory extends Model {
 
 		return $category_layout_data;
 	}
+
+    public function getCategoryUrls($category_id) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "category_any_url WHERE id_category = '" . (int)$category_id . "'");
+        return $query->rows;
+    }
+
+    public function deleteCategoryUrl($id)
+    {
+        return $this->db->query("DELETE FROM " . DB_PREFIX . "category_any_url WHERE id = '" . (int)$id . "'");
+    }
 
 	public function getTotalCategories() {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "category");

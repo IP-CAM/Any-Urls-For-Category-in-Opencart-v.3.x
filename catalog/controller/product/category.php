@@ -133,6 +133,9 @@ class ControllerProductCategory extends Controller {
 
 			$data['categories'] = array();
 
+			//Any Urls
+            $data['urls'] = $this->model_catalog_category->getAnyUrl($category_id);
+
 			$results = $this->model_catalog_category->getCategories($category_id);
 
 			foreach ($results as $result) {

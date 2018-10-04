@@ -110,6 +110,13 @@ class ControllerCatalogCategory extends Controller {
 		$this->getList();
 	}
 
+    public function deleteUrl() {
+        $this->load->model('catalog/category');
+        $id = $_POST['id'];
+        $this->model_catalog_category->deleteCategoryUrl($id);
+        echo json_encode(true);
+    }
+
 	public function repair() {
 		$this->load->language('catalog/category');
 
@@ -496,6 +503,14 @@ class ControllerCatalogCategory extends Controller {
 		} else {
 			$data['category_layout'] = array();
 		}
+
+        if (isset($this->request->post['any_urls'])) {
+            $data['any_urls'] = $this->request->post['any_urls'];
+        } elseif (isset($this->request->get['category_id'])) {
+            $data['any_urls'] = $this->model_catalog_category->getCategoryUrls($this->request->get['category_id']);
+        } else {
+            $data['any_urls'] = array();
+        }
 
 		$this->load->model('design/layout');
 

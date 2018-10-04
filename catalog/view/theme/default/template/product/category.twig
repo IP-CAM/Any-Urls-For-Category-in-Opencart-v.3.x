@@ -165,6 +165,22 @@
       </div>
       {% endif %}
       {{ content_bottom }}</div>
+    <style>
+      ul.anyUrl > li {
+        list-style: none;
+        display: inline-block;
+        padding: 5px 12px;
+        margin-bottom: 5px;
+        background: #e6e6e6;
+      }
+    </style>
+    <!-- Any URLS -->
+      <ul class="anyUrl">
+      {% for url in urls %}
+        <li><a href="{{ url.link }}">{{ url.name }}</a></li>
+      {% endfor %}
+      </ul>
+
     {{ column_right }}</div>
 </div>
 {{ footer }} 
